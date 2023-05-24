@@ -52,14 +52,37 @@ export default class Tron {
     }
     isAddress(address) {
         if (!address) {
-            throw new Error("Need address in parameter")
+            throw new Error("Pass address in parameter")
         }
         return this.tronweb.isAddress(address);
     }
-    async checkConnection() {
+    checkConnection() {
         return this.tronweb.isConnected();
+    } 
+    getBalance(address){
+        return this.tronweb.trx.getBalance(address)
+    } 
+    toSun(amount){
+        return this.tronweb.toSun(amount);
     }
+    sendTrx(to, from, amount, options = null) {
+        if (!to|| !from|| !amount) {
+            throw new Error("Pass all parameters")
+        }
+        amount = this.toSun(amount);
+        //check address validations
+        let isToAddress = this.isAddress(to);
+        let isFromAddress = this.isAddress(from);
+        if(!isToAddress || !isFromAddress){
+            throw new Error("Invalid address")
+        }
+        if(options != null){
+            return this.tronweb.transactionBuilder.sendTrx(to, amount, from, options)
+        }
+        return this.tronweb.transactionBuilder.sendTrx(to, amount, from)
+    }
+    
 }
 
 var obj = new Tron();
-console.log(await obj.isAddress("abc"))
+console.log(await obj.sendTrx("TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr","TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL","23"))
