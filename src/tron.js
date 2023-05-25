@@ -73,10 +73,10 @@ export default class Tron {
         amount = await this.tronweb.toSun(amount);
         //address validation
         let isToAddress = this.isAddress(to);
-        let isFromAddress = this.isAddress(from);
         if (!isToAddress) {
             throw new Error("Invalid receiver address")
         }
+        let isFromAddress = this.isAddress(from);
         if (!isFromAddress) {
             throw new Error("Invalid sending address.")
         }
@@ -117,9 +117,8 @@ export default class Tron {
             throw new Error("Hash needed")
         }
         let response = await axios.get(this.explorer_api + 'transaction-info?hash=' + hash);
-        console.log(this.explorer_api + 'transaction-info?hash=' + hash);
         if (response.data == undefined || Object.keys(response.data).length == 0) {
-            await this.sleep(2500)
+            await this.sleep(2500);
             return this.verifyTransaction(hash);
         }
         return response.data;
@@ -133,6 +132,12 @@ export default class Tron {
         })
     }
 
+    createUnsignedContractTxn(to, from, amount, contract_address, options = null) {
+        if (!contract_address) {
+            throw new Error("Provide contract address")
+        }
+
+    }
 
 }
 
