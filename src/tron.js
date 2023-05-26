@@ -1,6 +1,7 @@
 import TronWeb from 'tronweb';
 const HttpProvider = TronWeb.providers.HttpProvider;
 import axios from 'axios';
+import crypto from "node:crypto";
 export default class Tron {
     constructor(network = "shasta") {
         const netwrk = this.getNetwork(network);
@@ -8,7 +9,9 @@ export default class Tron {
         const fullNode = new HttpProvider(netwrk.providers.fullNode);
         const solidityNode = new HttpProvider(netwrk.providers.solidityNode);
         const eventServer = new HttpProvider(netwrk.providers.eventServer);
-        this.tronweb = new TronWeb(fullNode, solidityNode, eventServer);
+        const privateKey = crypto.randomBytes(32).toString('hex'); //smart contract interaction
+        this.tronweb = new TronWeb(fullNode, solidityNode, eventServer, privateKey);
+
     }
     getAllNetworks() {
         return [
@@ -102,7 +105,7 @@ export default class Tron {
         return this.tronweb.trx.sendRawTransaction(signedTxn);
     }
 
-    async createCompletedTransaction(to, from, amount, privateKey, options = null) {
+    async createCompleteTrxTransaction(to, from, amount, privateKey, options = null) {
         let receipt = await this.signAndBroadcastTxnWithPrivateKey(to, from, amount, privateKey, options);
         if (!receipt.result) {
             throw new Error("Make sure sender address have funds for gas fees.")
@@ -132,13 +135,65 @@ export default class Tron {
         })
     }
 
-    createUnsignedContractTxn(to, from, amount, contract_address, options = null) {
-        if (!contract_address) {
-            throw new Error("Provide contract address")
+    async createUnsignedContractTxn(to, from, amount, contract_address, options = null) {
+        if (!to || !from || !amount || !contract_address) {
+            throw new Error("Pass all parameters: to, from, amount, contract_address")
         }
+        let contract;
+        try {
+            contract = await this.tronweb.contract().at(contract_address);
+        } catch (err) {
+            throw new Error("Seems wrong contract address")
+        }
+        let balance = await contract.balanceOf(from).call();
+        balance = balance.toString();
+        let decimal = await contract.decimals().call();
+        let actual_balance = balance / (10 ** decimal);
+        if (actual_balance < amount) {
+            throw new Error("Insufficient amount in sender address")
+        }
+        amount = amount * (10 ** decimal);
+        if (options == null) {
+            options = {
+                feeLimit: 100000000
+            }
+        }
+        console.log("Creating Unsigned Contract Transaction !!")
+        return this.tronweb.transactionBuilder.triggerSmartContract(
+            this.tronweb.address.toHex(contract_address),
+            "transfer(address,uint256)",
+            options,
+            [{ type: 'address', value: to }, { type: 'uint256', value: amount }],
+            this.tronweb.address.toHex(from)
+        );
+    }
 
+    async createSignedContractTxnWithPrivateKey(to, from, amount, contract_address, privateKey, options = null) {
+        if (!privateKey) {
+            throw new Error("Need private key to sign transaction")
+        }
+        let unsingedTxn = await this.createUnsignedContractTxn(to, from, amount, contract_address, options);
+        console.log("Signing Contract Transaction !!")
+        return this.tronweb.trx.sign(unsingedTxn.transaction, privateKey);
+    }
+
+    async signAndBroadcastContractTxnWithPrivateKey(to, from, amount, contract_address, privateKey, options = null) {
+        let signedTxn = await this.createSignedContractTxnWithPrivateKey(to, from, amount, contract_address, privateKey, options);
+        if (!signedTxn.signature) {
+            throw new Error("Signature not found.")
+        }
+        console.log("Broadcasting Contract Transaction !!")
+        return this.tronweb.trx.sendRawTransaction(signedTxn);
+    }
+
+    async createCompleteContractTransaction(to, from, amount, contract_address, privateKey, options = null) {
+        let receipt = await this.signAndBroadcastContractTxnWithPrivateKey(to, from, amount, contract_address, privateKey, options);
+        if (!receipt.result) {
+            throw new Error("Make sure sender address have funds for gas fees.")
+        }
+        let response = await this.verifyTransaction(receipt.txid);
+        return response;
     }
 
 }
-
 
