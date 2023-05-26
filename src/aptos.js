@@ -44,11 +44,12 @@ export default class Aptos {
     async getBalanceWithPrivateKey(privateKey, extraArgs = null) {
         let account = await this.getAccountWithPrivateKey(privateKey)
         extraArgs = {
-            coinType: extraArgs?.coinType ?? 'APTOS_COIN'
+            coinType: extraArgs?.coinType ?? '0x1::aptos_coin::AptosCoin'
         }
         return this.coinClient.checkBalance(account, extraArgs)
     }
-    // 1 Octa = 10-8 APT
+    // 1 Octa = 10-8 APT 
+
 }
 
 const obj = new Aptos();
