@@ -3,6 +3,6 @@ import Aptos from "./src/aptos.js";
 import Sui from "./src/sui.js";
 export default {
     Tron,
-    // Aptos,
+    Aptos,
     // Sei
 }

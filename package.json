@@ -1,13 +1,18 @@
 {
-  "name": "alltransaction",
+  "name": "@ajaythxkur/transactions-helper",
   "version": "1.0.0",
-  "description": "",
+  "description": "The transaction helper",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type":"git",
+    "url":"git+https://github.com/ajaythxkur/transactions-helper"
+  },
+  "homepage": "https://github.com/ajaythxkur/transactions-helper#readme",
+  "keywords": ["tron","aptos"],
+  "author": "ajaythxkur",
   "license": "ISC",
   "dependencies": {
     "@mysten/sui.js": "^0.34.1",
