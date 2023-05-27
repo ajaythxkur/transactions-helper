@@ -41,16 +41,44 @@ export default class Aptos {
         }
         return new AptosAccount(HexString.ensure(privateKey).toUint8Array());
     }
+    getAccountWithAddress(address){
+        if(!address){
+            throw new Error("Pass address in parameter")
+        }
+        return this.client.getAccount(address)
+    }
     async getBalanceWithPrivateKey(privateKey, extraArgs = null) {
         let account = await this.getAccountWithPrivateKey(privateKey)
         extraArgs = {
             coinType: extraArgs?.coinType ?? '0x1::aptos_coin::AptosCoin'
         }
-        return this.coinClient.checkBalance(account, extraArgs)
+        let balance = await this.coinClient.checkBalance(account, extraArgs);
+        return Number(balance)/Math.pow(10,8);
     }
-    // 1 Octa = 10-8 APT 
+    async transferCoin(privateKey, to_address, amount,  extraArgs=null, options=null){
+        let sender = await this.getAccountWithPrivateKey(privateKey);
+        let balance = await this.getBalanceWithPrivateKey(privateKey, extraArgs);
+        if(balance < amount){
+            throw new Error("Sender lacks blance to send.")
+        }
+        amount = amount * Math.pow(10,8);
+        if(options == null){
+            options = {
+                gasUnitPrice : BigInt(100)
+            }
+        }
+        extraArgs = {
+            coinType: extraArgs?.coinType ?? '0x1::aptos_coin::AptosCoin',
+            gasUnitPrice: options.gasUnitPrice
+        }
+        return this.coinClient.transfer(sender, to_address, amount, extraArgs)
+    }
+    async createCompleteTxnWithPrivateKey(privateKey, to_address, amount,  extraArgs=null, options=null){
+        let txHash = await this.transferCoin(privateKey, to_address, amount,  extraArgs, options);
+        console.log(txHash)
+        let wait = await this.client.waitForTransaction(txHash);
+        return wait;
+    }
+    // 1 Octa = 10 ^ 8 APT 
 
 }
-
-const obj = new Aptos();
-console.log(await obj.getBalanceWithPrivateKey("0x24d0afb5baf8056f8e11298d0f2376c5814e8fa8b415abea1ba1200699df7a54"))
