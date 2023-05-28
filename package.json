@@ -1,5 +1,5 @@
 {
-  "name": "@ajaythxkur/transactions-helper",
+  "name": "transactions-helper",
   "version": "1.0.0",
   "description": "The transaction helper",
   "main": "index.js",
@@ -7,19 +7,19 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "type":"git",
-    "url":"git+https://github.com/ajaythxkur/transactions-helper"
+    "type": "git",
+    "url": "git+https://github.com/ajaythxkur/transactions-helper"
   },
   "homepage": "https://github.com/ajaythxkur/transactions-helper#readme",
-  "keywords": ["tron","aptos"],
+  "keywords": [
+    "tron",
+    "aptos"
+  ],
   "author": "ajaythxkur",
   "license": "ISC",
   "dependencies": {
     "@mysten/sui.js": "^0.34.1",
     "aptos": "^1.9.1",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "node-fetch": "^3.3.1",
     "tronweb": "^5.2.0"
   },
   "type": "module"

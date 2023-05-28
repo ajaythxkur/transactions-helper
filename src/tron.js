@@ -127,7 +127,7 @@ export default class Tron {
         return response.data;
     }
 
-    sleep(ms) {
+    static sleep(ms) {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve()
