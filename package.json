@@ -1,7 +1,7 @@
 {
   "name": "transactions-helper",
-  "version": "1.0.0",
-  "description": "The transaction helper",
+  "version": "1.0.2",
+  "description": "Helper built with <3.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,13 +13,16 @@
   "homepage": "https://github.com/ajaythxkur/transactions-helper#readme",
   "keywords": [
     "tron",
-    "aptos"
+    "aptos",
+    "transactions",
+    "txn"
   ],
   "author": "ajaythxkur",
   "license": "ISC",
   "dependencies": {
     "@mysten/sui.js": "^0.34.1",
     "aptos": "^1.9.1",
+    "transactions-helper": "^1.0.1",
     "tronweb": "^5.2.0"
   },
   "type": "module"

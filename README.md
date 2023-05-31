@@ -1,8 +1,26 @@
-# transactions-helper
+transactions-helper
+===================
 
-<h1>Tron</h1>
-<p>Create a Tron instance</p>
-`
-import Tron from "transactions-helper";
-const HelperTron = new Tron(network); //default shasta
-`
+A `transactions-helper` library for Tron, Aptos (& adding more) transactions.
+
+Install
+-------
+```sh
+npm i transactions-helper
+```
+
+Usage
+-----
+Tron
+```js
+import Tron from "transactions-helper/src/tron.js";
+const tron = new Tron();
+```
+Aptos
+```js
+import Aptos from "transactions-helper/src/aptos.js";
+const aptos = new Aptos();
+```
+Building
+-----
+Made with <3 by [ajaythxkur](https://github.com/ajaythxkur)
