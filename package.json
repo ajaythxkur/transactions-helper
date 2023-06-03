@@ -22,7 +22,6 @@
   "dependencies": {
     "@mysten/sui.js": "^0.34.1",
     "aptos": "^1.9.1",
-    "transactions-helper": "^1.0.1",
     "tronweb": "^5.2.0"
   },
   "type": "module"
