@@ -21,6 +21,15 @@ Aptos
 import Aptos from "transactions-helper/src/aptos.js";
 const aptos = new Aptos();
 ```
+
+License
+--------
+This package is for testing purpose only. I do not recommend this to be used on main networks right now.
+
 Building
------
-Made with <3 by [ajaythxkur](https://github.com/ajaythxkur)
+--------
+[ajaythxkur](https://github.com/ajaythxkur)
+
+License
+--------
+Unlicensed
